@@ -9,17 +9,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import core.Board
+import ui.CheckersBoard
 
 @Composable
 @Preview
 fun App() {
+    val board = remember { Board() }
     MaterialTheme {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            BasicText("Hello, World!")
+        Column {
+            CheckersBoard(board = board)
         }
     }
 }
