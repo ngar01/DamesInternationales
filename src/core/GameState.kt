@@ -5,6 +5,8 @@ import androidx.compose.runtime.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import ui.ThemeType
+import ui.Themes
 
 enum class GameStatus {
     PLAYING,
@@ -43,6 +45,15 @@ class GameState(private val scope: CoroutineScope) {
 
     var gameStatus by mutableStateOf(GameStatus.PLAYING)
         private set
+
+    var currentTheme by mutableStateOf(ThemeType.CLASSIC)
+        private set
+
+    // Changer le thème
+    fun setTheme(theme: ThemeType) {
+        currentTheme = theme
+        refreshTrigger++
+    }
 
     // Vérifier la fin de partie
     private fun checkGameOver() {

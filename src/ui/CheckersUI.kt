@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import core.Board
@@ -19,7 +19,8 @@ fun CheckersBoard(
     board: Board,
     onPieceSelected: (Position) -> Unit,
     selectedPiece: Position?,
-    possibleMoves: List<Position>
+    possibleMoves: List<Position>,
+    theme: CheckersTheme = Themes.CLASSIC
 ) {
     Canvas(
         modifier = Modifier
@@ -42,26 +43,26 @@ fun CheckersBoard(
             for (col in 0 until 10) {
                 val isDarkCell = (row + col) % 2 == 1
                 drawRect(
-                    color = if (isDarkCell) Color(0xFF8B4513) else Color(0xFFDEB887),
+                    color = if (isDarkCell) theme.darkSquare else theme.lightSquare,
                     topLeft = Offset(col * cellSize, row * cellSize),
                     size = Size(cellSize, cellSize)
                 )
             }
         }
 
-        // Afficher les mouvements possibles (cercles verts)
+        // Afficher les mouvements possibles (cercles)
         possibleMoves.forEach { pos ->
             drawCircle(
-                color = Color.Green.copy(alpha = 0.5f),
+                color = theme.possibleMoveHighlight,
                 center = Offset(pos.col * cellSize + cellSize / 2, pos.row * cellSize + cellSize / 2),
                 radius = cellSize / 5
             )
         }
 
-        // Afficher la sélection du pion (cercle bleu)
+        // Afficher la sélection du pion (cercle de surbrillance)
         selectedPiece?.let { pos ->
             drawCircle(
-                color = Color.Blue.copy(alpha = 0.3f),
+                color = theme.selectedHighlight,
                 center = Offset(pos.col * cellSize + cellSize / 2, pos.row * cellSize + cellSize / 2),
                 radius = cellSize / 2.5f
             )
@@ -76,23 +77,23 @@ fun CheckersBoard(
 
                     // Pion principal
                     drawCircle(
-                        color = if (piece.color == PieceColor.WHITE) Color.White else Color.Black,
+                        color = if (piece.color == PieceColor.WHITE) theme.whitePiece else theme.blackPiece,
                         center = center,
                         radius = cellSize / 3
                     )
 
                     // Bordure pour meilleure visibilité
                     drawCircle(
-                        color = if (piece.color == PieceColor.WHITE) Color.Black else Color.White,
+                        color = if (piece.color == PieceColor.WHITE) theme.whitePieceBorder else theme.blackPieceBorder,
                         center = center,
                         radius = cellSize / 3,
-                        style = androidx.compose.ui.graphics.drawscope.Stroke(width = 2f)
+                        style = Stroke(width = 2f)
                     )
 
-                    // Marque rouge pour les dames
+                    // Marque pour les dames
                     if (piece.isQueen) {
                         drawCircle(
-                            color = Color.Red,
+                            color = theme.queenMarker,
                             center = center,
                             radius = cellSize / 6
                         )
