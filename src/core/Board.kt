@@ -211,6 +211,33 @@ class Board {
         return canCapture(position, piece).isNotEmpty()
     }
 
+    // Vérifier si un joueur a encore des pions
+    fun hasAnyPieces(color: PieceColor): Boolean {
+        for (row in 0 until 10) {
+            for (col in 0 until 10) {
+                val piece = grid[row][col]
+                if (piece?.color == color) return true
+            }
+        }
+        return false
+    }
+
+    // Vérifier si un joueur a encore des coups possibles
+    fun hasAnyMoves(color: PieceColor): Boolean {
+        for (row in 0 until 10) {
+            for (col in 0 until 10) {
+                val piece = grid[row][col]
+                if (piece?.color == color) {
+                    val pos = Position(row, col)
+                    if (canCapture(pos, piece).isNotEmpty() || getPossibleMoves(pos, piece).isNotEmpty()) {
+                        return true
+                    }
+                }
+            }
+        }
+        return false
+    }
+
     // IA : Trouver un coup aléatoire pour l'ordinateur (avec support des prises multiples)
     fun getRandomMove(color: PieceColor): Pair<Position, Position>? {
         val pieces = mutableListOf<Position>()
