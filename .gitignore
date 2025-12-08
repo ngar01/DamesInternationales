@@ -1,0 +1,11 @@
+# Dossiers de build Gradle
+build/
+.gradlew
+gradlew.bat
+.gradle/
+!gradle/wrapper/gradle-wrapper.properties
+
+
+
+# Fichiers système
+.DS_Store
