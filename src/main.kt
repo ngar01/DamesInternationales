@@ -1,7 +1,5 @@
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,8 +8,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
@@ -21,7 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import core.*
@@ -44,7 +39,7 @@ fun App() {
             modifier = Modifier.fillMaxSize().padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Titre et Sélecteur de thème
+            // Titre et Sélecteurs
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -58,11 +53,22 @@ fun App() {
                     color = theme.textColor
                 )
 
-                ThemeDropdown(
-                    currentTheme = gameState.currentTheme,
-                    onThemeSelected = { gameState.setTheme(it) },
-                    theme = theme
-                )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    GameModeDropdown(
+                        currentMode = gameState.gameMode,
+                        onModeSelected = { gameState.changeGameMode(it) },
+                        theme = theme,
+                        enabled = !gameState.isAITurn
+                    )
+
+                    ThemeDropdown(
+                        currentTheme = gameState.currentTheme,
+                        onThemeSelected = { gameState.setTheme(it) },
+                        theme = theme
+                    )
+                }
             }
 
             // Boutons Undo/Redo
@@ -104,8 +110,18 @@ fun App() {
             Text(
                 text = when {
                     gameState.isAITurn -> "⏳ Tour de l'IA..."
-                    gameState.board.currentPlayer == PieceColor.WHITE -> "▶ Votre tour (Blancs)"
-                    else -> "▶ Tour des Noirs"
+                    gameState.gameMode == GameMode.PLAYER_VS_AI -> {
+                        if (gameState.board.currentPlayer == PieceColor.WHITE)
+                            "▶ Votre tour (Blancs)"
+                        else
+                            "▶ Tour de l'IA (Noirs)"
+                    }
+                    else -> {
+                        if (gameState.board.currentPlayer == PieceColor.WHITE)
+                            "▶ Tour du Joueur 1 (Blancs)"
+                        else
+                            "▶ Tour du Joueur 2 (Noirs)"
+                    }
                 },
                 modifier = Modifier.padding(top = 16.dp),
                 fontSize = 18.sp,
@@ -121,49 +137,6 @@ fun App() {
                 onQuit = { /* Gérer la fermeture */ }
             )
         }
-    }
-}
-
-@Composable
-fun ThemeSelector(
-    themeName: String,
-    isSelected: Boolean,
-    onClick: () -> Unit,
-    themePreview: CheckersTheme,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier
-            .clip(RoundedCornerShape(8.dp))
-            .border(
-                width = if (isSelected) 3.dp else 1.dp,
-                color = if (isSelected) themePreview.buttonColor else Color.Gray,
-                shape = RoundedCornerShape(8.dp)
-            )
-            .clickable(onClick = onClick)
-            .padding(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        // Aperçu du thème (mini damier)
-        Row {
-            Box(
-                modifier = Modifier
-                    .size(20.dp)
-                    .background(themePreview.lightSquare)
-            )
-            Box(
-                modifier = Modifier
-                    .size(20.dp)
-                    .background(themePreview.darkSquare)
-            )
-        }
-
-        Text(
-            text = themeName,
-            fontSize = 12.sp,
-            color = themePreview.textColor,
-            modifier = Modifier.padding(top = 4.dp)
-        )
     }
 }
 

@@ -1,4 +1,3 @@
-// src/main/kotlin/core/GameState.kt
 package core
 
 import androidx.compose.runtime.*
@@ -13,6 +12,39 @@ enum class GameStatus {
     WHITE_WINS,
     BLACK_WINS,
     DRAW
+}
+
+enum class GameMode {
+    PLAYER_VS_AI,
+    PLAYER_VS_PLAYER
+}
+
+data class GameModeInfo(
+    val mode: GameMode,
+    val name: String,
+    val description: String,
+    val icon: String
+)
+
+object GameModes {
+    val MODES = listOf(
+        GameModeInfo(
+            mode = GameMode.PLAYER_VS_AI,
+            name = "Joueur vs IA",
+            description = "Affrontez l'ordinateur",
+            icon = "🤖"
+        ),
+        GameModeInfo(
+            mode = GameMode.PLAYER_VS_PLAYER,
+            name = "Joueur vs Joueur",
+            description = "Jouez à deux sur le même écran",
+            icon = "👥"
+        )
+    )
+
+    fun getInfo(mode: GameMode): GameModeInfo {
+        return MODES.first { it.mode == mode }
+    }
 }
 
 class GameState(private val scope: CoroutineScope) {
@@ -49,10 +81,19 @@ class GameState(private val scope: CoroutineScope) {
     var currentTheme by mutableStateOf(ThemeType.CLASSIC)
         private set
 
+    var gameMode by mutableStateOf(GameMode.PLAYER_VS_AI)
+        private set
+
     // Changer le thème
     fun setTheme(theme: ThemeType) {
         currentTheme = theme
         refreshTrigger++
+    }
+
+    // Changer le mode de jeu
+    fun changeGameMode(mode: GameMode) {
+        gameMode = mode
+        resetGame()
     }
 
     // Vérifier la fin de partie
@@ -266,7 +307,10 @@ class GameState(private val scope: CoroutineScope) {
         refreshTrigger++
         checkGameOver()
 
-        if (gameStatus == GameStatus.PLAYING) {
+        // Lancer l'IA seulement en mode Joueur vs IA et si c'est le tour des noirs
+        if (gameStatus == GameStatus.PLAYING &&
+            gameMode == GameMode.PLAYER_VS_AI &&
+            board.currentPlayer == PieceColor.BLACK) {
             playAITurn()
         }
     }
