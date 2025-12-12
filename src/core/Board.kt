@@ -1,4 +1,3 @@
-// src/main/kotlin/core/Board.kt
 package core
 
 data class Position(val row: Int, val col: Int)

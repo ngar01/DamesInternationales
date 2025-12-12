@@ -5,10 +5,7 @@ gradlew.bat
 .gradle/
 !gradle/wrapper/gradle-wrapper.properties
 
-# Fichiers IDE
-.idea/
-*.iml
-*.ipr
+
 
 # Fichiers système
 .DS_Store

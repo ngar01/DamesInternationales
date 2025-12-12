@@ -1,3 +1,4 @@
+// src/main/kotlin/core/GameState.kt
 package core
 
 import androidx.compose.runtime.*
@@ -83,6 +84,45 @@ class GameState(private val scope: CoroutineScope) {
 
     var gameMode by mutableStateOf(GameMode.PLAYER_VS_AI)
         private set
+
+    var hoveredPiece by mutableStateOf<Position?>(null)
+        private set
+
+    // Scores
+    var whiteScore by mutableStateOf(0)
+        private set
+
+    var blackScore by mutableStateOf(0)
+        private set
+
+    // Définir le pion survolé
+    fun updateHoveredPiece(position: Position?) {
+        hoveredPiece = position
+    }
+
+    // Vérifier si un pion peut être déplacé
+    fun canPieceMove(position: Position): Boolean {
+        if (isAITurn || gameStatus != GameStatus.PLAYING) return false
+
+        val piece = board.getPiece(position) ?: return false
+        if (piece.color != board.currentPlayer) return false
+
+        // En mode capture multiple, seul le pion qui doit continuer peut bouger
+        if (mustContinueCapture && lastMovedPosition != null) {
+            return position == lastMovedPosition
+        }
+
+        // Vérifier si le pion a des mouvements possibles
+        val hasCaptures = board.canCapture(position, piece).isNotEmpty()
+        val hasMoves = board.getPossibleMoves(position, piece).isNotEmpty()
+
+        // Si des captures sont obligatoires globalement
+        if (board.hasCaptures(piece.color)) {
+            return hasCaptures
+        }
+
+        return hasCaptures || hasMoves
+    }
 
     // Changer le thème
     fun setTheme(theme: ThemeType) {

@@ -1,3 +1,4 @@
+// src/main/kotlin/ui/CheckersUI.kt
 package ui
 
 import androidx.compose.foundation.Canvas
@@ -7,7 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import core.Board
@@ -18,13 +21,46 @@ import core.Position
 fun CheckersBoard(
     board: Board,
     onPieceSelected: (Position) -> Unit,
+    onHover: (Position?) -> Unit,
+    canPieceMove: (Position) -> Boolean,
     selectedPiece: Position?,
     possibleMoves: List<Position>,
+    hoveredPiece: Position?,
     theme: CheckersTheme = Themes.CLASSIC
 ) {
     Canvas(
         modifier = Modifier
             .size(500.dp)
+            .pointerInput(Unit) {
+                awaitPointerEventScope {
+                    while (true) {
+                        val event = awaitPointerEvent()
+                        val cellSize = size.width / 10
+
+                        when (event.type) {
+                            PointerEventType.Move -> {
+                                val position = event.changes.first().position
+                                val col = (position.x / cellSize).toInt()
+                                val row = (position.y / cellSize).toInt()
+
+                                if (row in 0 until 10 && col in 0 until 10) {
+                                    val pos = Position(row, col)
+                                    if (board.getPiece(pos) != null) {
+                                        onHover(pos)
+                                    } else {
+                                        onHover(null)
+                                    }
+                                } else {
+                                    onHover(null)
+                                }
+                            }
+                            PointerEventType.Exit -> {
+                                onHover(null)
+                            }
+                        }
+                    }
+                }
+            }
             .pointerInput(Unit) {
                 detectTapGestures { offset ->
                     val cellSize = size.width / 10
@@ -74,6 +110,18 @@ fun CheckersBoard(
                 val piece = board.getPiece(Position(row, col))
                 if (piece != null) {
                     val center = Offset(col * cellSize + cellSize / 2, row * cellSize + cellSize / 2)
+                    val pos = Position(row, col)
+
+                    // Effet de survol - anneau coloré
+                    if (hoveredPiece == pos) {
+                        val canMove = canPieceMove(pos)
+                        drawCircle(
+                            color = if (canMove) theme.possibleMoveHighlight else Color(0xFFE74C3C).copy(alpha = 0.6f),
+                            center = center,
+                            radius = cellSize / 2.8f,
+                            style = Stroke(width = 4f)
+                        )
+                    }
 
                     // Pion principal
                     drawCircle(
