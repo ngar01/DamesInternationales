@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dee42d35-9416-485d-b5b3-5b46e9047a71" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/Board.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/Board.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/GameState.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/GameState.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ui/CheckersUI.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/CheckersUI.kt" afterDir="false" />
-    </list>
+    <list default="true" id="dee42d35-9416-485d-b5b3-5b46e9047a71" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -42,7 +36,6 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "develop",
     "kotlin-language-version-configured": "true"
   }
 }]]></component>
